@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEZ Casa | Armonía y Confort</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="overlay"></div>
+
+    <header>
+        <div class="logo-area">
+            <img src="fez-logo.png" alt="FEZ Casa" class="logo-xl">
+            <p class="slogan">hogar & armonía</p>
+        </div>
+    </header>
+
+    <div class="navegacion-tienda">
+        <div id="filtros-categorias" class="categorias-container">
+            </div>
+    </div>
+
+    <main id="tienda-grid" class="grid-productos">
+        </main>
+
+    <section class="instagram-section">
+        <h2>Seguinos en <a href="https://instagram.com/fezcasa" target="_blank">@fezcasa</a></h2>
+        <div id="curator-feed-default-feed-layout">
+            <a href="https://curator.io" target="_blank" class="crt-logo crt-tag">Powered by Curator.io</a>
+        </div>
+    </section>
+
+    <a href="https://wa.me/543482XXXXXX" class="float-btn wa-btn" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
+
+    <div id="btn-abrir-carrito" class="float-btn cart-btn">
+        <span id="cart-count">0</span>
+        <img src="https://cdn-icons-png.flaticon.com/512/107/107831.png" alt="Carrito">
+    </div>
+
+    <aside id="carrito-sidebar">
+        <div class="sidebar-header">
+            <h3>Tu Pedido</h3>
+            <button id="btn-cerrar-carrito" class="close-icon">&times;</button>
+        </div>
+        
+        <div id="carrito-items"></div>
+
+        <div class="sidebar-footer">
+            <div class="envio-promo">
+                <p id="envio-msg">¡Sumá $50.000 para envío gratis!</p>
+                <div class="progress-bg"><div id="progress-bar"></div></div>
+            </div>
+
+            <div class="form-cliente">
+                <h4>Datos de entrega:</h4>
+                <input type="text" id="nombre-cliente" placeholder="Tu nombre completo">
+                <select id="select-zona">
+                    <option value="Reconquista">Reconquista (Gratis)</option>
+                    <option value="Ruta 11 / Rosario / Corrientes">Ruta 11 / Rosario / Ctes (Moulin)</option>
+                    <option value="Resto del País">Resto del país (A coordinar)</option>
+                </select>
+            </div>
+
+            <div class="total-div">
+                <span>Total:</span>
+                <span id="cart-total">$0</span>
+            </div>
+            <button class="btn-final-wa" onclick="validarYEnviar()">Finalizar por WhatsApp</button>
+        </div>
+    </aside>
+
+    <div id="modal-producto" class="modal">
+        <div class="modal-content">
+            <span class="cerrar-modal close-icon">&times;</span>
+            <div class="modal-grid">
+                <div class="modal-img-container">
+                    <img id="modal-img" src="" alt="">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-titulo"></h2>
+                    <p id="modal-descripcion"></p>
+                    <div id="opciones-medidas"></div>
+                    <button id="btn-agregar-modal" class="btn-card">Añadir al Carrito</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
