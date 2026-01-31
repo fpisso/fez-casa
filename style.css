@@ -1,0 +1,72 @@
+:root {
+    --arena: #f9f7f2;
+    --dorado: #c5a880;
+    --texto: #4a4a4a;
+}
+
+body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--arena); color: var(--texto); overflow-x: hidden; }
+
+/* Botones Flotantes */
+.float-btn { position: fixed; bottom: 25px; width: 60px; height: 60px; z-index: 2000; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.wa-btn { left: 25px; }
+.cart-btn { right: 25px; background: var(--dorado); }
+.float-btn img { width: 30px; }
+.cart-btn img { filter: invert(1); }
+#cart-count { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; }
+
+/* Header y Logo */
+header { text-align: center; padding: 60px 20px; background: white; }
+.logo-xl { width: 500px; max-width: 90%; height: auto; }
+.slogan { letter-spacing: 10px; text-transform: uppercase; font-size: 0.8rem; color: var(--dorado); margin-top: 15px; }
+
+/* Filtros de Categoría */
+.navegacion-tienda { text-align: center; margin: 30px 0; }
+.categorias-container { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+.btn-filtro { background: none; border: none; border-bottom: 1px solid transparent; color: var(--texto); padding: 5px 15px; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; transition: 0.3s; }
+.btn-filtro:hover { border-bottom: 1px solid var(--dorado); color: var(--dorado); }
+
+/* Grid de Productos */
+.grid-productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; padding: 40px; max-width: 1200px; margin: auto; }
+.card { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.03); transition: 0.3s; }
+.card:hover { transform: translateY(-5px); }
+.card img { width: 100%; height: 320px; object-fit: cover; border-radius: 10px; cursor: pointer; }
+.card h3 { margin: 15px 0 5px; cursor: pointer; font-family: 'Montserrat', sans-serif; }
+.btn-card { background: var(--dorado); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; font-weight: 500; margin-top: 15px; }
+
+/* Sidebar Carrito */
+#carrito-sidebar { position: fixed; top: 0; right: -450px; width: 400px; height: 100%; background: white; z-index: 2500; transition: 0.5s; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.05); }
+#carrito-sidebar.active { right: 0; }
+@media (max-width: 450px) { #carrito-sidebar { width: 100%; right: -100%; } }
+
+#overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(2px); cursor: pointer; }
+
+/* Modal Producto */
+.modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
+.modal-content { background: white; width: 90%; max-width: 850px; margin: 5vh auto; padding: 40px; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto; }
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+
+/* Responsivo para Móviles */
+@media (max-width: 768px) { 
+    .modal-grid { grid-template-columns: 1fr; } 
+    .logo-xl { width: 300px; }
+    .grid-productos { padding: 20px; gap: 20px; }
+}
+
+.modal-img-container img { width: 100%; border-radius: 10px; }
+.close-icon { background: none; border: none; font-size: 2.5rem; color: var(--dorado); cursor: pointer; line-height: 1; }
+.cerrar-modal { position: absolute; right: 20px; top: 10px; }
+
+/* Footer Carrito */
+.form-cliente { margin: 20px 0; border-top: 1px solid #eee; padding-top: 20px; }
+.form-cliente input, .form-cliente select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
+.progress-bg { background: #eee; height: 8px; border-radius: 4px; margin-top: 8px; }
+#progress-bar { background: var(--dorado); height: 100%; width: 0%; transition: 0.5s; }
+.total-div { font-size: 1.2rem; font-weight: bold; display: flex; justify-content: space-between; margin: 20px 0; }
+.btn-final-wa { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+
+/* Sección Instagram */
+.instagram-section { padding: 60px 20px; background: white; text-align: center; }
+.instagram-section h2 { font-family: 'Montserrat', sans-serif; font-weight: 200; margin-bottom: 30px; letter-spacing: 4px; }
+.instagram-section a { color: var(--dorado); text-decoration: none; font-weight: 400; }
+}
+}
