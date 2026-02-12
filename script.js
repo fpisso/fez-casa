@@ -81,9 +81,10 @@ function renderizarProductos(lista) {
     if(!grid) return;
     grid.innerHTML = lista.map(p => `
         <div class="card">
-            <img src="${p.imagen}" onclick="abrirFicha(${p.id})">
+            <div class="sku-tag">Art. ${p.sku}</div> 
+            <img src="${p.imagen}" onclick="abrirFicha(${p.id})" alt="${p.nombre}">
             <h3 onclick="abrirFicha(${p.id})">${p.nombre}</h3>
-            <p>$${p.precio.toLocaleString()}</p>
+            <p class="precio-card">$${p.precio.toLocaleString()}</p>
             <button class="btn-card" onclick="clickBotonDirecto(${p.id})">
                 ${p.medidas.length > 0 ? 'Ver Opciones' : 'Añadir al Carrito'}
             </button>
@@ -202,3 +203,4 @@ document.getElementById('btn-abrir-carrito').onclick = () => {
     document.getElementById('overlay').style.display = 'block';
 
 };
+
