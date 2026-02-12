@@ -98,7 +98,7 @@ function clickBotonDirecto(id) {
     if (p.medidas.length > 0) {
         abrirFicha(id);
     } else {
-        agregarAlCarrito(p.nombre, p.precio, "Única");
+        agregarAlCarrito(p.sku, p.nombre, p.precio, "Única");
     }
 }
 
@@ -106,7 +106,8 @@ function abrirFicha(id) {
     const p = productos.find(x => x.id === id);
     if(!p) return;
 
-    document.getElementById('modal-titulo').innerText = p.nombre;
+    // 1. Mostramos SKU y Nombre en el título
+    document.getElementById('modal-titulo').innerHTML = `<small style="color:#888">Art. ${p.sku}</small><br>${p.nombre}`;
     document.getElementById('modal-descripcion').innerText = p.descripcion;
     document.getElementById('modal-img').src = p.imagen;
     
@@ -116,7 +117,7 @@ function abrirFicha(id) {
     if (p.medidas.length > 0) {
         divMedidas.innerHTML = '<h4>Seleccioná el tamaño:</h4>' + p.medidas.map(m => `
             <button class="btn-card" style="background:#eee; color:#444; margin-bottom:8px" 
-                onclick="agregarAlCarrito('${p.nombre}', ${p.precio + m.extra}, '${m.talle}')">
+                onclick="agregarAlCarrito('${p.sku}', '${p.nombre}', ${p.precio + m.extra}, '${m.talle}')">
                 ${m.talle} (+$${m.extra.toLocaleString()})
             </button>
         `).join('');
@@ -124,29 +125,24 @@ function abrirFicha(id) {
     } else {
         divMedidas.innerHTML = '';
         btnModal.style.display = 'block';
-        btnModal.onclick = () => agregarAlCarrito(p.nombre, p.precio, "Única");
+        // 2. Aquí también agregamos p.sku al principio
+        btnModal.onclick = () => agregarAlCarrito(p.sku, p.nombre, p.precio, "Única");
     }
 
     document.getElementById('modal-producto').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
     document.body.style.overflow = 'hidden';
+
 }
 
 // 5. CARRITO
-function agregarAlCarrito(nombre, precio, talle) {
-    carrito.push({ nombre, precio, talle });
+function agregarAlCarrito(sku, nombre, precio, talle) {
+    // Guardamos todo en minúsculas para no errarle
+    carrito.push({ sku, nombre, precio, talle });
     actualizarCarritoUI();
     cerrarTodo();
     document.getElementById('carrito-sidebar').classList.add('active');
     document.getElementById('overlay').style.display = 'block';
-}
-
-function cerrarTodo() {
-    document.getElementById('carrito-sidebar').classList.remove('active');
-    const modal = document.getElementById('modal-producto');
-    if(modal) modal.style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-    document.body.style.overflow = 'auto';
 }
 
 function actualizarCarritoUI() {
@@ -155,6 +151,7 @@ function actualizarCarritoUI() {
     container.innerHTML = carrito.map((i, idx) => {
         total += i.precio;
         return `<div style="border-bottom:1px solid #eee; padding:15px 0; position:relative">
+                    <small style="color:#888">Art. ${i.sku}</small><br> 
                     <strong>${i.nombre}</strong><br>
                     <small>Talle: ${i.talle}</small><br>
                     <span>$${i.precio.toLocaleString()}</span>
@@ -173,11 +170,6 @@ function actualizarCarritoUI() {
     if(envMsg) envMsg.innerText = total >= 50000 ? "¡Envío GRATIS alcanzado! 🚚" : `Faltan $${(50000 - total).toLocaleString()} para Envío Gratis`;
 }
 
-function eliminar(index) {
-    carrito.splice(index, 1);
-    actualizarCarritoUI();
-}
-
 function validarYEnviar() {
     const nombre = document.getElementById('nombre-cliente').value;
     const zona = document.getElementById('select-zona').value;
@@ -186,10 +178,16 @@ function validarYEnviar() {
     if (carrito.length === 0) { alert("Tu carrito está vacío."); return; }
 
     let msg = `Hola FEZ Casa! Mi nombre es ${nombre}.\nQuiero realizar un pedido:\n\n`;
-    carrito.forEach(i => msg += `- ${i.nombre} (${i.talle}): $${i.precio.toLocaleString()}\n`);
+    
+    // IMPORTANTE: Aquí usamos i.sku en minúscula
+    carrito.forEach(i => {
+        msg += `- [Art. ${i.sku}] ${i.nombre} (${i.talle}): $${i.precio.toLocaleString()}\n`;
+    });
+    
     msg += `\nZona de entrega: ${zona}\nTotal: ${document.getElementById('cart-total').innerText}`;
     
-    window.open(`https://wa.me/543482XXXXXX?text=${encodeURIComponent(msg)}`);
+    // Corregido el número a 54 (Argentina) y el resto del link
+    window.open(`https://wa.me/543415150064?text=${encodeURIComponent(msg)}`);
 }
 
 // ASIGNAR EVENTOS
@@ -203,4 +201,5 @@ document.getElementById('btn-abrir-carrito').onclick = () => {
     document.getElementById('overlay').style.display = 'block';
 
 };
+
 
