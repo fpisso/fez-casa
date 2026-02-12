@@ -17,25 +17,27 @@ async function obtenerProductos() {
 
         const filas = datos.split(/\r?\n/).slice(1);
         
-        productos = filas.map((fila, index) => {
-            // Soporta coma o punto y coma
-            const columnas = fila.includes(';') ? fila.split(';') : fila.split(',');
-            
-            if (columnas.length < 3 || !columnas[0]) return null;
+       productos = filas.map((fila, index) => {
+    // Soporta coma o punto y coma
+    const columnas = fila.includes(';') ? fila.split(';') : fila.split(',');
+    
+    // Ahora chequeamos que tenga al menos 4 columnas (SKU, Nombre, Cat, Precio)
+    if (columnas.length < 4 || !columnas[1]) return null;
 
-            const limpiar = (texto) => texto ? texto.replace(/^"|"$/g, '').trim() : "";
+    const limpiar = (texto) => texto ? texto.replace(/^"|"$/g, '').trim() : "";
 
-            return {
-                id: index,
-                nombre: limpiar(columnas[0]),
-                categoria: limpiar(columnas[1]) || "General",
-                precio: parseInt(limpiar(columnas[2]).replace(/\D/g,'')) || 0,
-                descripcion: limpiar(columnas[3]) || "",
-                medidas: procesarMedidas(limpiar(columnas[4])),
-                imagen: limpiar(columnas[5]) || "https://via.placeholder.com/400x500?text=FEZ+Casa"
-            };
-        }).filter(p => p !== null);
-
+    return {
+        id: index,
+        sku: limpiar(columnas[0]), // Columna A (0)
+        nombre: limpiar(columnas[1]), // Columna B (1)
+        categoria: limpiar(columnas[2]) || "General", // Columna C (2)
+        precio: parseInt(limpiar(columnas[3]).replace(/\D/g,'')) || 0, // Columna D (3)
+        descripcion: limpiar(columnas[4]) || "", // Columna E (4)
+        medidas: procesarMedidas(limpiar(columnas[5])), // Columna F (5)
+        imagen: limpiar(columnas[6]) || "https://via.placeholder.com/400x500?text=FEZ+Casa" // Columna G (6)
+    };
+}).filter(p => p !== null && p.precio > 0); // Filtramos los que tienen precio 0
+        
         console.log("Productos cargados:", productos);
         renderizarCategorias();
         renderizarProductos(productos);
@@ -198,4 +200,5 @@ document.querySelector('.cerrar-modal').onclick = cerrarTodo;
 document.getElementById('btn-abrir-carrito').onclick = () => {
     document.getElementById('carrito-sidebar').classList.add('active');
     document.getElementById('overlay').style.display = 'block';
+
 };
