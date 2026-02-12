@@ -30,19 +30,21 @@ async function obtenerProductos() {
         renderizarCategorias();
         renderizarProductos(productos);
     } catch (error) {
-        console.error("Error:", error);
+        console.error("Error cargando productos:", error);
     }
 }
 
 function procesarMedidas(texto) {
-    if (!texto || texto.trim() === "") return [];
+    if (!texto || texto.trim() === "" || texto.trim() === "-") return [];
     return texto.split('|').map(m => {
         const partes = m.split(':');
+        const talle = partes[0] ? partes[0].trim() : "";
+        if (talle === "") return null;
         return { 
-            talle: partes[0] ? partes[0].trim() : "Opción", 
+            talle: talle, 
             extra: partes[1] ? parseInt(partes[1].replace(/\D/g,'')) : 0 
         };
-    });
+    }).filter(m => m !== null);
 }
 
 // 2. RENDERIZAR
@@ -68,7 +70,7 @@ function renderizarProductos(lista) {
             <h3 onclick="abrirFicha(${p.id})">${p.nombre}</h3>
             <p class="precio-card">$${p.precio.toLocaleString()}</p>
             <button class="btn-card" onclick="clickBotonDirecto(${p.id})">
-                ${p.medidas.length > 0 ? 'Ver Opciones' : 'Añadir al Carrito'}
+                ${p.medidas.length > 1 ? 'Ver Opciones' : 'Añadir al Carrito'}
             </button>
         </div>
     `).join('');
@@ -78,9 +80,14 @@ function renderizarProductos(lista) {
 function clickBotonDirecto(id) {
     const p = productos.find(x => x.id === id);
     if (!p) return;
-    if (p.medidas.length > 0) {
+    
+    if (p.medidas.length > 1) {
         abrirFicha(id);
+    } else if (p.medidas.length === 1) {
+        // Si tiene 1 sola medida, va directo con esa medida
+        agregarAlCarrito(p.sku, p.nombre, p.precio + p.medidas[0].extra, p.medidas[0].talle);
     } else {
+        // Si no tiene medidas definidas
         agregarAlCarrito(p.sku, p.nombre, p.precio, "Única");
     }
 }
@@ -89,41 +96,36 @@ function abrirFicha(id) {
     const p = productos.find(x => x.id === id);
     if(!p) return;
 
-    // Guardamos el precio base en una variable para los cálculos
     const precioBase = p.precio;
-
-    // 1. Cargar datos básicos
     document.getElementById('modal-titulo').innerHTML = `<small style="color:#888">Art. ${p.sku}</small><br>${p.nombre}`;
     document.getElementById('modal-descripcion').innerText = p.descripcion;
     document.getElementById('modal-img').src = p.imagen;
     
-    // Función interna para cambiar el precio en el modal sin afectar el carrito todavía
     const mostrarPrecioTotal = (extra = 0) => {
         const total = precioBase + extra;
-        // Buscamos un lugar donde mostrar el precio, si no existe lo creamos o usamos el h2
-        document.getElementById('modal-precio-display').innerText = `$${total.toLocaleString()}`;
+        const display = document.getElementById('modal-precio-display');
+        if(display) display.innerText = `$${total.toLocaleString()}`;
     };
 
     const divMedidas = document.getElementById('opciones-medidas');
     const btnModal = document.getElementById('btn-agregar-modal');
 
-    if (p.medidas && p.medidas.length > 0) {
-        // Inicializamos el precio con la primera opción o el base
+    if (p.medidas.length > 1) {
         mostrarPrecioTotal(p.medidas[0].extra);
-
-        divMedidas.innerHTML = '<h4>Seleccioná una opción:</h4>' + p.medidas.map((m, index) => `
-            <button class="btn-opcion-modal" 
-                onclick="seleccionarOpcionModal(this, '${p.sku}', '${p.nombre}', ${precioBase + m.extra}, '${m.talle}')">
+        divMedidas.innerHTML = '<h4>Seleccioná una opción:</h4>' + p.medidas.map(m => `
+            <button class="btn-opcion-modal" style="width:100%; margin-bottom:10px; padding:10px; cursor:pointer;"
+                onclick="seleccionarOpcionModal('${p.sku}', '${p.nombre}', ${precioBase + m.extra}, '${m.talle}')">
                 ${m.talle} ${m.extra > 0 ? '(+$' + m.extra.toLocaleString() + ')' : ''}
             </button>
         `).join('');
-        
-        btnModal.style.display = 'none'; // El cliente agrega desde los botones de opciones
+        btnModal.style.display = 'none';
     } else {
-        mostrarPrecioTotal(0);
+        const extra = p.medidas.length === 1 ? p.medidas[0].extra : 0;
+        const talle = p.medidas.length === 1 ? p.medidas[0].talle : "Única";
+        mostrarPrecioTotal(extra);
         divMedidas.innerHTML = '';
         btnModal.style.display = 'block';
-        btnModal.onclick = () => agregarAlCarrito(p.sku, p.nombre, precioBase, "Única");
+        btnModal.onclick = () => agregarAlCarrito(p.sku, p.nombre, precioBase + extra, talle);
     }
 
     document.getElementById('modal-producto').style.display = 'block';
@@ -131,19 +133,16 @@ function abrirFicha(id) {
     document.body.style.overflow = 'hidden';
 }
 
-// Función auxiliar para cuando clickean una opción en el modal
-function seleccionarOpcionModal(elemento, sku, nombre, precioTotal, talle) {
-    // Podríamos dar un feedback visual aquí si quisiéramos (cambiar color del botón)
+function seleccionarOpcionModal(sku, nombre, precioTotal, talle) {
     agregarAlCarrito(sku, nombre, precioTotal, talle);
-}
 }
 
 // 5. CARRITO
 function agregarAlCarrito(sku, nombre, precio, talle) {
     carrito.push({ sku, nombre, precio, talle });
     actualizarCarritoUI();
-    cerrarTodo(); // Esto cierra el modal
-    abrirCarrito(); // Esto abre el sidebar para mostrar que se agregó
+    cerrarTodo();
+    abrirCarrito();
 }
 
 function abrirCarrito() {
@@ -152,9 +151,12 @@ function abrirCarrito() {
 }
 
 function cerrarTodo() {
-    document.getElementById('carrito-sidebar').classList.remove('active');
-    document.getElementById('modal-producto').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
+    const side = document.getElementById('carrito-sidebar');
+    const mod = document.getElementById('modal-producto');
+    const over = document.getElementById('overlay');
+    if(side) side.classList.remove('active');
+    if(mod) mod.style.display = 'none';
+    if(over) over.style.display = 'none';
     document.body.style.overflow = 'auto';
 }
 
@@ -175,10 +177,10 @@ function actualizarCarritoUI() {
     document.getElementById('cart-count').innerText = carrito.length;
     
     const porc = Math.min((total / 50000) * 100, 100);
-    if(document.getElementById('progress-bar')) document.getElementById('progress-bar').style.width = porc + '%';
-    if(document.getElementById('envio-msg')) {
-        document.getElementById('envio-msg').innerText = total >= 50000 ? "¡Envío GRATIS alcanzado! 🚚" : `Faltan $${(50000 - total).toLocaleString()} para Envío Gratis`;
-    }
+    const bar = document.getElementById('progress-bar');
+    if(bar) bar.style.width = porc + '%';
+    const msg = document.getElementById('envio-msg');
+    if(msg) msg.innerText = total >= 50000 ? "¡Envío GRATIS alcanzado! 🚚" : `Faltan $${(50000 - total).toLocaleString()} para Envío Gratis`;
 }
 
 function eliminar(index) {
@@ -198,13 +200,10 @@ function validarYEnviar() {
     window.open(`https://wa.me/543415150064?text=${encodeURIComponent(msg)}`);
 }
 
-// ASIGNAR EVENTOS (Corregido para que coincida con tu HTML)
+// ASIGNAR EVENTOS
 window.onload = obtenerProductos;
 document.getElementById('overlay').onclick = cerrarTodo;
 document.getElementById('btn-cerrar-carrito').onclick = cerrarTodo;
 document.getElementById('btn-abrir-carrito').onclick = abrirCarrito;
-document.querySelector('.cerrar-modal').onclick = cerrarTodo;
-
-
-
-
+const btnCerrarModal = document.querySelector('.cerrar-modal');
+if(btnCerrarModal) btnCerrarModal.onclick = cerrarTodo;
