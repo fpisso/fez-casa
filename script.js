@@ -89,30 +89,53 @@ function abrirFicha(id) {
     const p = productos.find(x => x.id === id);
     if(!p) return;
 
+    // Guardamos el precio base en una variable para los cálculos
+    const precioBase = p.precio;
+
+    // 1. Cargar datos básicos
     document.getElementById('modal-titulo').innerHTML = `<small style="color:#888">Art. ${p.sku}</small><br>${p.nombre}`;
     document.getElementById('modal-descripcion').innerText = p.descripcion;
     document.getElementById('modal-img').src = p.imagen;
     
+    // Función interna para cambiar el precio en el modal sin afectar el carrito todavía
+    const mostrarPrecioTotal = (extra = 0) => {
+        const total = precioBase + extra;
+        // Buscamos un lugar donde mostrar el precio, si no existe lo creamos o usamos el h2
+        document.getElementById('modal-precio-display').innerText = `$${total.toLocaleString()}`;
+    };
+
     const divMedidas = document.getElementById('opciones-medidas');
     const btnModal = document.getElementById('btn-agregar-modal');
 
-    if (p.medidas.length > 0) {
-        divMedidas.innerHTML = '<h4>Seleccioná el tamaño:</h4>' + p.medidas.map(m => `
-            <button class="btn-card" style="background:#eee; color:#333; margin-bottom:8px; width:100%" 
-                onclick="agregarAlCarrito('${p.sku}', '${p.nombre}', ${p.precio + m.extra}, '${m.talle}')">
-                ${m.talle} (+$${m.extra.toLocaleString()})
+    if (p.medidas && p.medidas.length > 0) {
+        // Inicializamos el precio con la primera opción o el base
+        mostrarPrecioTotal(p.medidas[0].extra);
+
+        divMedidas.innerHTML = '<h4>Seleccioná una opción:</h4>' + p.medidas.map((m, index) => `
+            <button class="btn-opcion-modal" 
+                onclick="seleccionarOpcionModal(this, '${p.sku}', '${p.nombre}', ${precioBase + m.extra}, '${m.talle}')">
+                ${m.talle} ${m.extra > 0 ? '(+$' + m.extra.toLocaleString() + ')' : ''}
             </button>
         `).join('');
-        btnModal.style.display = 'none';
+        
+        btnModal.style.display = 'none'; // El cliente agrega desde los botones de opciones
     } else {
+        mostrarPrecioTotal(0);
         divMedidas.innerHTML = '';
         btnModal.style.display = 'block';
-        btnModal.onclick = () => agregarAlCarrito(p.sku, p.nombre, p.precio, "Única");
+        btnModal.onclick = () => agregarAlCarrito(p.sku, p.nombre, precioBase, "Única");
     }
 
     document.getElementById('modal-producto').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
     document.body.style.overflow = 'hidden';
+}
+
+// Función auxiliar para cuando clickean una opción en el modal
+function seleccionarOpcionModal(elemento, sku, nombre, precioTotal, talle) {
+    // Podríamos dar un feedback visual aquí si quisiéramos (cambiar color del botón)
+    agregarAlCarrito(sku, nombre, precioTotal, talle);
+}
 }
 
 // 5. CARRITO
@@ -181,6 +204,7 @@ document.getElementById('overlay').onclick = cerrarTodo;
 document.getElementById('btn-cerrar-carrito').onclick = cerrarTodo;
 document.getElementById('btn-abrir-carrito').onclick = abrirCarrito;
 document.querySelector('.cerrar-modal').onclick = cerrarTodo;
+
 
 
 
