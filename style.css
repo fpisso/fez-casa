@@ -69,4 +69,19 @@ header { text-align: center; padding: 60px 20px; background: white; }
 .instagram-section h2 { font-family: 'Montserrat', sans-serif; font-weight: 200; margin-bottom: 30px; letter-spacing: 4px; }
 .instagram-section a { color: var(--dorado); text-decoration: none; font-weight: 400; }
 }
+
+.sku-tag {
+    font-size: 10px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.precio-card {
+    font-weight: bold;
+    color: #333;
+    margin: 8px 0;
+}
 }
