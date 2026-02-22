@@ -106,5 +106,56 @@ header { text-align: center; padding: 60px 20px; background: white; }
     font-size: 1.5rem;
     font-weight: 500;
 }
+/* --- AJUSTES PARA CELULAR (Mobile First) --- */
+@media (max-width: 600px) {
+    /* Los productos de a 2 por fila, como en Instagram */
+    #contenedor-productos {
+        display: grid;
+        grid-template-columns: 1fr 1fr; 
+        gap: 10px;
+        padding: 10px;
+    }
+
+    /* Ajustamos el tamaño de las tarjetas */
+    .producto {
+        margin: 0;
+        width: 100%;
+    }
+
+    .producto img {
+        height: 150px; /* Fotos más compactas para que entren más */
+        object-fit: cover;
+    }
+
+    .producto h3 {
+        font-size: 0.9rem;
+        height: 40px; /* Para que los títulos no se desalineen */
+        overflow: hidden;
+    }
+
+    /* Filtros que no ocupan toda la pantalla: Carrusel horizontal */
+    .filtros {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
+    }
+
+    .filtros button {
+        flex: 0 0 auto; /* No se achican */
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+
+    /* Modal (la ficha) que ocupe casi toda la pantalla */
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 15px;
+    }
+
 }
+
 
