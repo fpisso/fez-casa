@@ -137,9 +137,17 @@ function seleccionarOpcionModal(sku, nombre, precioTotal, talle) {
     agregarAlCarrito(sku, nombre, precioTotal, talle);
 }
 
-// 5. CARRITO
+// 5. CARRITO (Versión con Cantidades)
 function agregarAlCarrito(sku, nombre, precio, talle) {
-    carrito.push({ sku, nombre, precio, talle });
+    // Buscamos si ya existe el mismo artículo con el mismo talle
+    const itemExistente = carrito.find(i => i.sku === sku && i.talle === talle);
+
+    if (itemExistente) {
+        itemExistente.cantidad += 1; // Si existe, sumamos cantidad
+    } else {
+        carrito.push({ sku, nombre, precio, talle, cantidad: 1 }); // Si no, lo agregamos con cantidad 1
+    }
+
     actualizarCarritoUI();
     cerrarTodo();
     abrirCarrito();
@@ -163,24 +171,46 @@ function cerrarTodo() {
 function actualizarCarritoUI() {
     const container = document.getElementById('carrito-items');
     let total = 0;
+    let totalItems = 0;
+
     container.innerHTML = carrito.map((i, idx) => {
-        total += i.precio;
-        return `<div class="carrito-item" style="border-bottom:1px solid #eee; padding:10px 0; position:relative">
+        const subtotal = i.precio * i.cantidad;
+        total += subtotal;
+        totalItems += i.cantidad;
+
+        return `<div class="carrito-item" style="border-bottom:1px solid #eee; padding:15px 0; position:relative">
                     <small>Art. ${i.sku}</small><br>
-                    <strong>${i.nombre}</strong> (${i.talle})<br>
-                    <span>$${i.precio.toLocaleString()}</span>
-                    <button onclick="eliminar(${idx})" style="position:absolute; right:0; top:10px; background:none; border:none; cursor:pointer">🗑️</button>
+                    <strong>${i.nombre}</strong> <small>(${i.talle})</small><br>
+                    <span>$${i.precio.toLocaleString()} x ${i.cantidad} = <strong>$${subtotal.toLocaleString()}</strong></span>
+                    
+                    <div style="margin-top:8px; display:flex; align-items:center; gap:10px">
+                        <button onclick="cambiarCantidad(${idx}, -1)" style="width:25px; cursor:pointer">-</button>
+                        <span>${i.cantidad}</span>
+                        <button onclick="cambiarCantidad(${idx}, 1)" style="width:25px; cursor:pointer">+</button>
+                    </div>
+
+                    <button onclick="eliminar(${idx})" style="position:absolute; right:0; top:10px; background:none; border:none; cursor:pointer; font-size:1.2rem">🗑️</button>
                 </div>`;
     }).join('');
 
     document.getElementById('cart-total').innerText = `$${total.toLocaleString()}`;
-    document.getElementById('cart-count').innerText = carrito.length;
+    document.getElementById('cart-count').innerText = totalItems;
     
+    // Barra de progreso de envío
     const porc = Math.min((total / 50000) * 100, 100);
     const bar = document.getElementById('progress-bar');
     if(bar) bar.style.width = porc + '%';
     const msg = document.getElementById('envio-msg');
     if(msg) msg.innerText = total >= 50000 ? "¡Envío GRATIS alcanzado! 🚚" : `Faltan $${(50000 - total).toLocaleString()} para Envío Gratis`;
+}
+
+function cambiarCantidad(index, delta) {
+    carrito[index].cantidad += delta;
+    if (carrito[index].cantidad <= 0) {
+        eliminar(index);
+    } else {
+        actualizarCarritoUI();
+    }
 }
 
 function eliminar(index) {
@@ -195,11 +225,14 @@ function validarYEnviar() {
     if (carrito.length === 0) { alert("Tu carrito está vacío."); return; }
 
     let msg = `Hola FEZ Casa! Mi pedido:\n\n`;
-    carrito.forEach(i => msg += `- [Art. ${i.sku}] ${i.nombre} (${i.talle}): $${i.precio.toLocaleString()}\n`);
-    msg += `\nZona: ${zona}\nTotal: ${document.getElementById('cart-total').innerText}`;
+    carrito.forEach(i => {
+        const sub = i.precio * i.cantidad;
+        msg += `- ${i.cantidad}x ${i.nombre} (${i.talle}) [Art. ${i.sku}]: $${sub.toLocaleString()}\n`;
+    });
+    msg += `\nZona: ${zona}\nTotal: ${document.getElementById('cart-total').innerText}\nCliente: ${nombre}`;
+    
     window.open(`https://wa.me/543415150064?text=${encodeURIComponent(msg)}`);
 }
-
 // ASIGNAR EVENTOS
 window.onload = obtenerProductos;
 document.getElementById('overlay').onclick = cerrarTodo;
@@ -207,3 +240,4 @@ document.getElementById('btn-cerrar-carrito').onclick = cerrarTodo;
 document.getElementById('btn-abrir-carrito').onclick = abrirCarrito;
 const btnCerrarModal = document.querySelector('.cerrar-modal');
 if(btnCerrarModal) btnCerrarModal.onclick = cerrarTodo;
+
