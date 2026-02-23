@@ -34,9 +34,22 @@ header { text-align: center; padding: 60px 20px; background: white; }
 .btn-card { background: var(--dorado); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; font-weight: 500; margin-top: 15px; }
 
 /* Sidebar Carrito */
-#carrito-sidebar { position: fixed; top: 0; right: -450px; width: 400px; height: 100%; background: white; z-index: 2500; transition: 0.5s; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.05); }
+#carrito-sidebar { 
+    position: fixed; top: 0; right: -450px; width: 400px; height: 100%; 
+    background: white; z-index: 2500; transition: 0.5s; padding: 30px; 
+    box-sizing: border-box; display: flex; flex-direction: column; 
+    box-shadow: -5px 0 15px rgba(0,0,0,0.05); 
+}
 #carrito-sidebar.active { right: 0; }
 #overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(2px); cursor: pointer; }
+
+/* Ajuste de scroll interno del carrito */
+#carrito-items {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    margin-top: 20px;
+}
 
 /* Modal Producto */
 .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
@@ -48,31 +61,25 @@ header { text-align: center; padding: 60px 20px; background: white; }
     padding: 40px; 
     border-radius: 15px; 
     position: relative; 
-    max-height: 85vh; /* Limitamos altura */
-    overflow-y: auto; /* PERMITE SCROLL INTERNO */
+    max-height: 85vh; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch;
 }
 .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 .modal-img-container img { width: 100%; border-radius: 10px; }
 .close-icon { background: none; border: none; font-size: 2.5rem; color: var(--dorado); cursor: pointer; line-height: 1; }
-.cerrar-modal { position: absolute; right: 20px; top: 10px; }
+.cerrar-modal { position: absolute; right: 20px; top: 10px; z-index: 10; }
 
-/* Footer Carrito */
-.form-cliente { margin: 20px 0; border-top: 1px solid #eee; padding-top: 20px; }
+/* Footer Carrito y Formularios */
+.form-cliente { margin-top: auto; border-top: 1px solid #eee; padding: 20px 0; background: white; }
 .form-cliente input, .form-cliente select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-family: inherit; }
-.progress-bg { background: #eee; height: 8px; border-radius: 4px; margin-top: 8px; }
-#progress-bar { background: var(--dorado); height: 100%; width: 0%; transition: 0.5s; }
-.total-div { font-size: 1.2rem; font-weight: bold; display: flex; justify-content: space-between; margin: 20px 0; }
-.btn-final-wa { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
+.btn-final-wa { background: #25d366; color: white; border: none; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
 
-/* Sección Instagram */
+/* Otros Estilos */
 .instagram-section { padding: 60px 20px; background: white; text-align: center; }
-.instagram-section h2 { font-family: 'Montserrat', sans-serif; font-weight: 200; margin-bottom: 30px; letter-spacing: 4px; }
-.instagram-section a { color: var(--dorado); text-decoration: none; font-weight: 400; }
-
 .sku-tag { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 500; }
 .precio-card { font-weight: bold; color: #333; margin: 8px 0; }
-.btn-opcion-modal { width: 100%; padding: 12px; margin-bottom: 8px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.2s; text-align: left; }
-.btn-opcion-modal:hover { background-color: #eee; border-color: #bbb; }
+.btn-opcion-modal { width: 100%; padding: 12px; margin-bottom: 8px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; text-align: left; }
 #modal-precio-display { font-size: 1.5rem; font-weight: 500; }
 
 /* --- AJUSTES PARA CELULAR (Mobile First) --- */
@@ -87,27 +94,22 @@ header { text-align: center; padding: 60px 20px; background: white; }
         gap: 15px !important; 
     }
     
-    .card { padding: 10px !important; }
-    .card img { height: 180px !important; }
-    .card h3 { font-size: 0.85rem !important; }
-    
-    .categorias-container {
-        display: flex !important;
-        overflow-x: auto !important;
-        white-space: nowrap !important;
-        justify-content: flex-start !important;
-        padding: 10px !important;
-        gap: 10px !important;
-    }
-    
-    .btn-filtro { flex: 0 0 auto !important; font-size: 0.7rem !important; }
+    .card img { height: 160px !important; }
     
     .modal-content { 
         width: 95% !important; 
         padding: 20px !important; 
         margin: 2vh auto !important; 
-        max-height: 90vh !important; 
+        max-height: 88vh !important; 
     }
 
-    #carrito-sidebar { width: 100%; right: -100%; }
+    /* Espacio extra al final del modal para que el botón no quede tapado */
+    .modal-grid::after {
+        content: "";
+        display: block;
+        height: 50px;
+    }
+
+    #carrito-sidebar { width: 100%; right: -100%; padding: 20px; }
 }
+
