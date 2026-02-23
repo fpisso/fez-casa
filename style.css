@@ -36,22 +36,22 @@ header { text-align: center; padding: 60px 20px; background: white; }
 /* Sidebar Carrito */
 #carrito-sidebar { position: fixed; top: 0; right: -450px; width: 400px; height: 100%; background: white; z-index: 2500; transition: 0.5s; padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.05); }
 #carrito-sidebar.active { right: 0; }
-@media (max-width: 450px) { #carrito-sidebar { width: 100%; right: -100%; } }
-
 #overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(2px); cursor: pointer; }
 
 /* Modal Producto */
 .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); }
-.modal-content { background: white; width: 90%; max-width: 850px; margin: 5vh auto; padding: 40px; border-radius: 15px; position: relative; max-height: 90vh; overflow-y: auto; }
-.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-
-/* Responsivo para Móviles */
-@media (max-width: 768px) { 
-    .modal-grid { grid-template-columns: 1fr; } 
-    .logo-xl { width: 300px; }
-    .grid-productos { padding: 20px; gap: 20px; }
+.modal-content { 
+    background: white; 
+    width: 90%; 
+    max-width: 850px; 
+    margin: 5vh auto; 
+    padding: 40px; 
+    border-radius: 15px; 
+    position: relative; 
+    max-height: 85vh; /* Limitamos altura */
+    overflow-y: auto; /* PERMITE SCROLL INTERNO */
 }
-
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
 .modal-img-container img { width: 100%; border-radius: 10px; }
 .close-icon { background: none; border: none; font-size: 2.5rem; color: var(--dorado); cursor: pointer; line-height: 1; }
 .cerrar-modal { position: absolute; right: 20px; top: 10px; }
@@ -68,70 +68,29 @@ header { text-align: center; padding: 60px 20px; background: white; }
 .instagram-section { padding: 60px 20px; background: white; text-align: center; }
 .instagram-section h2 { font-family: 'Montserrat', sans-serif; font-weight: 200; margin-bottom: 30px; letter-spacing: 4px; }
 .instagram-section a { color: var(--dorado); text-decoration: none; font-weight: 400; }
-}
 
-.sku-tag {
-    font-size: 10px;
-    color: #999;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
-    font-weight: 500;
-}
+.sku-tag { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 500; }
+.precio-card { font-weight: bold; color: #333; margin: 8px 0; }
+.btn-opcion-modal { width: 100%; padding: 12px; margin-bottom: 8px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.2s; text-align: left; }
+.btn-opcion-modal:hover { background-color: #eee; border-color: #bbb; }
+#modal-precio-display { font-size: 1.5rem; font-weight: 500; }
 
-.precio-card {
-    font-weight: bold;
-    color: #333;
-    margin: 8px 0;
-}
-.btn-opcion-modal {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 8px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Poppins', sans-serif;
-    transition: all 0.2s;
-    text-align: left;
-}
-
-.btn-opcion-modal:hover {
-    background-color: #eee;
-    border-color: #bbb;
-}
-
-#modal-precio-display {
-    font-size: 1.5rem;
-    font-weight: 500;
-}
-/* --- AJUSTES PARA CELULAR (Mobile First) Corregido para FEZ --- */
-@media (max-width: 600px) {
-    /* Grilla de a 2 productos */
-    .grid-productos {
-        display: grid;
-        grid-template-columns: 1fr 1fr !important; /* Forzamos las 2 columnas */
-        gap: 15px !important;
-        padding: 15px !important;
+/* --- AJUSTES PARA CELULAR (Mobile First) --- */
+@media (max-width: 768px) {
+    .modal-grid { grid-template-columns: 1fr; gap: 20px; }
+    .logo-xl { width: 220px !important; }
+    header { padding: 30px 10px !important; }
+    
+    .grid-productos { 
+        grid-template-columns: 1fr 1fr !important; 
+        padding: 15px !important; 
+        gap: 15px !important; 
     }
-
-    /* Ajustamos las tarjetas para que no se vean gigantes */
-    .card {
-        padding: 10px !important;
-        border-radius: 10px !important;
-    }
-
-    .card img {
-        height: 180px !important; /* Altura ideal para celu */
-    }
-
-    .card h3 {
-        font-size: 0.85rem !important;
-        margin: 10px 0 5px !important;
-    }
-
-    /* Filtros tipo carrusel (el dedo manda) */
+    
+    .card { padding: 10px !important; }
+    .card img { height: 180px !important; }
+    .card h3 { font-size: 0.85rem !important; }
+    
     .categorias-container {
         display: flex !important;
         overflow-x: auto !important;
@@ -139,32 +98,16 @@ header { text-align: center; padding: 60px 20px; background: white; }
         justify-content: flex-start !important;
         padding: 10px !important;
         gap: 10px !important;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .btn-filtro {
-        flex: 0 0 auto !important;
-        font-size: 0.7rem !important;
-        padding: 5px 10px !important;
-    }
-
-    /* Ajuste de logo para que no tape todo */
-    .logo-xl {
-        width: 220px !important;
     }
     
-    header {
-        padding: 30px 10px !important;
+    .btn-filtro { flex: 0 0 auto !important; font-size: 0.7rem !important; }
+    
+    .modal-content { 
+        width: 95% !important; 
+        padding: 20px !important; 
+        margin: 2vh auto !important; 
+        max-height: 90vh !important; 
     }
 
-    /* Modal más cómodo */
-    .modal-content {
-        width: 92% !important;
-        padding: 20px !important;
-        margin: 5% auto !important;
-    }
-
+    #carrito-sidebar { width: 100%; right: -100%; }
 }
-
-
-
