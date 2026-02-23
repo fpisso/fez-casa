@@ -106,56 +106,65 @@ header { text-align: center; padding: 60px 20px; background: white; }
     font-size: 1.5rem;
     font-weight: 500;
 }
-/* --- AJUSTES PARA CELULAR (Mobile First) --- */
+/* --- AJUSTES PARA CELULAR (Mobile First) Corregido para FEZ --- */
 @media (max-width: 600px) {
-    /* Los productos de a 2 por fila, como en Instagram */
-    #contenedor-productos {
+    /* Grilla de a 2 productos */
+    .grid-productos {
         display: grid;
-        grid-template-columns: 1fr 1fr; 
-        gap: 10px;
-        padding: 10px;
+        grid-template-columns: 1fr 1fr !important; /* Forzamos las 2 columnas */
+        gap: 15px !important;
+        padding: 15px !important;
     }
 
-    /* Ajustamos el tamaño de las tarjetas */
-    .producto {
-        margin: 0;
-        width: 100%;
+    /* Ajustamos las tarjetas para que no se vean gigantes */
+    .card {
+        padding: 10px !important;
+        border-radius: 10px !important;
     }
 
-    .producto img {
-        height: 150px; /* Fotos más compactas para que entren más */
-        object-fit: cover;
+    .card img {
+        height: 180px !important; /* Altura ideal para celu */
     }
 
-    .producto h3 {
-        font-size: 0.9rem;
-        height: 40px; /* Para que los títulos no se desalineen */
-        overflow: hidden;
+    .card h3 {
+        font-size: 0.85rem !important;
+        margin: 10px 0 5px !important;
     }
 
-    /* Filtros que no ocupan toda la pantalla: Carrusel horizontal */
-    .filtros {
-        display: flex;
-        overflow-x: auto;
-        white-space: nowrap;
-        padding: 10px;
-        gap: 8px;
-        -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
+    /* Filtros tipo carrusel (el dedo manda) */
+    .categorias-container {
+        display: flex !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        justify-content: flex-start !important;
+        padding: 10px !important;
+        gap: 10px !important;
+        -webkit-overflow-scrolling: touch;
     }
 
-    .filtros button {
-        flex: 0 0 auto; /* No se achican */
-        padding: 8px 15px;
-        font-size: 0.85rem;
+    .btn-filtro {
+        flex: 0 0 auto !important;
+        font-size: 0.7rem !important;
+        padding: 5px 10px !important;
     }
 
-    /* Modal (la ficha) que ocupe casi toda la pantalla */
+    /* Ajuste de logo para que no tape todo */
+    .logo-xl {
+        width: 220px !important;
+    }
+    
+    header {
+        padding: 30px 10px !important;
+    }
+
+    /* Modal más cómodo */
     .modal-content {
-        width: 95%;
-        margin: 10% auto;
-        padding: 15px;
+        width: 92% !important;
+        padding: 20px !important;
+        margin: 5% auto !important;
     }
 
 }
+
 
 
